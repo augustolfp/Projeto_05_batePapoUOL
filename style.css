@@ -1,4 +1,6 @@
 body {
+    display: flex;
+    align-items: center;
     background-color: #F3F3F3;
     font-family: 'Roboto', sans-serif;
 }
@@ -36,5 +38,29 @@ body {
 }
 
 .barraBase ion-icon {
-    font-size: 24px;
+    font-size: 32px;
 }
+
+input {
+    border-style: none;
+    outline: none;
+    width: 100%;
+}
+
+input::placeholder {
+    font-size: 18px;
+    color: black;
+    font-style: italic;
+}
+
+.containerMensagens {
+    padding: 106px 0;
+}
+
+.mensagem {
+    background-color: #FFDEDE;
+    font-size: 14px;
+    padding: 14px;
+    margin: 4px 0;
+}
+
