@@ -43,13 +43,32 @@ function buscarMensagensServidor() {
 
 function tratarSucessoGetMensagens(mensagens) {
     console.log(mensagens);
+    mensagens.data.forEach(insereMensagemNaTela);
 }
 
 function tratarFalhaGetMensagens(dadosErro) {
     console.log("Erro ao requisitar mensagens!");
 }
 
+function insereMensagemNaTela(mensagem) {
+    const containerMensagens = document.querySelector(".containerMensagens");
+    containerMensagens.innerHTML += `<div class='mensagem'>
+        (${mensagem.time}) ${mensagem.from}: ${mensagem.text}
+    </div>`;
+}
 
+function enviaMensagem() {
+    const texto = document.querySelector("input").value;
+    const mensagem = {from: userName.name, to: "Todos", text: texto, type: "message"};
+    //console.log(mensagem)
+    const envioMensagem = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', mensagem);
+    envioMensagem.then(trataSucessoEnvioMsg);
 
+}
+
+function trataSucessoEnvioMsg(dadosEnvio) {
+    console.log("Sucesso no envio da mensagem!");
+    buscarMensagensServidor();
+}
 
 entrarNaSala()
