@@ -59,16 +59,16 @@ function insereMensagemNaTela(mensagem) {
     const containerMensagens = document.querySelector(".containerMensagens");
     switch(mensagem.type) {
         case "status":
-            containerMensagens.innerHTML += `<div class='balloon status'>(${mensagem.time}) ${mensagem.from}: ${mensagem.text}</div>`;
+            containerMensagens.innerHTML += `<div class='balloon status'><span class='horarioMensagem'>(${mensagem.time}) </span><span class = 'users'>${mensagem.from} </span>${mensagem.text}</div>`;
         break;
 
         case "message":
-            containerMensagens.innerHTML += `<div class='balloon message'>(${mensagem.time}) ${mensagem.from}: ${mensagem.text}</div>`;
+            containerMensagens.innerHTML += `<div class='balloon message'><span class='horarioMensagem'>(${mensagem.time}) </span><span class = 'users'>${mensagem.from} </span>para <span class = 'users'>${mensagem.to}</span>: ${mensagem.text}</div>`;
         break;
 
         case "privateMessage":
             if(mensagemPrivadaEhParaMim(mensagem)) {
-                containerMensagens.innerHTML += `<div class='balloon private_message'>(${mensagem.time}) ${mensagem.from}: ${mensagem.text}</div>`;
+                containerMensagens.innerHTML += `<div class='balloon privateMessage'><span class='horarioMensagem'>(${mensagem.time}) </span><span class = 'users'>${mensagem.from} </span>reservadamente para <span class = 'users'>${mensagem.to}</span>: ${mensagem.text}</div>`;
             }
         break;
     }
@@ -80,12 +80,19 @@ function limpaTela() {
 }
 
 function enviaMensagem() {
-    const texto = document.querySelector("input").value;
-    const mensagem = {from: userName.name, to: "Todos", text: texto, type: "message"};
-    //console.log(mensagem)
-    const envioMensagem = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', mensagem);
-    envioMensagem.then(trataSucessoEnvioMsg);
+    const caixaTexto = document.querySelector("input");
+    const texto = caixaTexto.value;
+    if (texto !== "") {
+        const mensagem = {from: userName.name, to: "Todos", text: texto, type: "message"};
+        const envioMensagem = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', mensagem);
+        caixaTexto.value = "";
+        envioMensagem.then(trataSucessoEnvioMsg);
+        envioMensagem.catch(trataFalhaEnvioMensagem);
+    }
+}
 
+function trataFalhaEnvioMensagem() {
+    window.location.reload();
 }
 
 function trataSucessoEnvioMsg(dadosEnvio) {
@@ -113,6 +120,11 @@ function localizaUltimaMensagem() {
     return ultimaMensagem;
 }
 
+document.addEventListener("keyup", function(teclaClicada) {
+    if(teclaClicada.key === "Enter") {
+        document.getElementById("sendButton").click();
+    }
+})
 
 
 entrarNaSala()

@@ -5,6 +5,10 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+.users {
+    font-weight: bold;
+}
+
 .barraTopo {
     position: fixed;
     top: 0;
@@ -73,4 +77,8 @@ input::placeholder {
 
 .privateMessage {
     background-color: #FFDEDE;
+}
+
+.horarioMensagem {
+    color: #AAAAAA;
 }
