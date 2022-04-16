@@ -26,14 +26,15 @@ function tratarFalhaLogin(dadosErroLogin) {
 
 function tratarSucessoLogin() {
     setInterval(refreshConnection, 4000);
-    console.log("Login efetuado com sucesso!");
     refreshMessages();
+    setInterval(refreshMessages, 3000);
+    console.log("Login efetuado com sucesso!");
 }
 
 function refreshConnection() {
-    refreshMessages();
     const refreshPromess = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', userName);
     refreshPromess.catch(window.location.reload);
+    refreshPromess.then(console.log("Conexão Atualizada"));
 
 }
 
@@ -44,9 +45,10 @@ function refreshMessages() {
 }
 
 function tratarSucessoGetMensagens(mensagens) {
-    console.log(mensagens);
+    console.log("Mensagens atualizadas com sucesso");
     limpaTela();
     mensagens.data.forEach(insereMensagemNaTela);
+    scrollPaginaAteFinal();
 }
 
 function tratarFalhaGetMensagens(dadosErro) {
@@ -65,7 +67,9 @@ function insereMensagemNaTela(mensagem) {
         break;
 
         case "privateMessage":
-            containerMensagens.innerHTML += `<div class='balloon private_message'>(${mensagem.time}) ${mensagem.from}: ${mensagem.text}</div>`;
+            if(mensagemPrivadaEhParaMim(mensagem)) {
+                containerMensagens.innerHTML += `<div class='balloon private_message'>(${mensagem.time}) ${mensagem.from}: ${mensagem.text}</div>`;
+            }
         break;
     }
 }
@@ -88,5 +92,27 @@ function trataSucessoEnvioMsg(dadosEnvio) {
     console.log("Sucesso no envio da mensagem!");
     refreshMessages();
 }
+
+function mensagemPrivadaEhParaMim(mensagem) {
+    if(mensagem.to===userName.name) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+function scrollPaginaAteFinal() {
+    const ultimaMensagem = localizaUltimaMensagem();
+    ultimaMensagem.scrollIntoView();
+}
+
+function localizaUltimaMensagem() {
+    const mensagens = document.querySelectorAll(".balloon");
+    const ultimaMensagem = mensagens[mensagens.length -1];
+    return ultimaMensagem;
+}
+
+
 
 entrarNaSala()
