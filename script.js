@@ -3,39 +3,41 @@ let userName;
 function getUserName() {
     let name = prompt("Digite o seu Username!");
     userName = {name: name};
-    return userName;
 }
 
 function entrarNaSala() {
-    const addUser = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants', getUserName());
-    addUser.then(carregarInterfaceUsuario);
+    getUserName();
+    const addUser = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants', userName);
+    addUser.then(tratarSucessoLogin);
     addUser.catch(tratarFalhaLogin);
 }
 
 function tratarFalhaLogin(dadosErroLogin) {
     const errorCode = dadosErroLogin.response.status;
-    alert(`Erro ${errorCode}!`);
     switch(errorCode) {
         case 400:
             alert("Já existe um usuário com esse nome! Tente novamente!");
             return entrarNaSala();
         default: 
-            alert("Não tenho a menor ideia do que fazer, irmão");
+            window.location.reload();
             break;
     }
 }
 
-function carregarInterfaceUsuario() {
-    setInterval(mantemUsuarioOnline, 4000);
-    alert("Login efetuado com sucesso!");
-    buscarMensagensServidor();
+function tratarSucessoLogin() {
+    setInterval(refreshConnection, 4000);
+    console.log("Login efetuado com sucesso!");
+    refreshMessages();
 }
 
-function mantemUsuarioOnline() {
-    axios.post('https://mock-api.driven.com.br/api/v6/uol/status', userName);
+function refreshConnection() {
+    refreshMessages();
+    const refreshPromess = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', userName);
+    refreshPromess.catch(window.location.reload);
+
 }
 
-function buscarMensagensServidor() {
+function refreshMessages() {
     const getMensagens = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages');
     getMensagens.then(tratarSucessoGetMensagens);
     getMensagens.catch(tratarFalhaGetMensagens);
@@ -43,6 +45,7 @@ function buscarMensagensServidor() {
 
 function tratarSucessoGetMensagens(mensagens) {
     console.log(mensagens);
+    limpaTela();
     mensagens.data.forEach(insereMensagemNaTela);
 }
 
@@ -52,9 +55,24 @@ function tratarFalhaGetMensagens(dadosErro) {
 
 function insereMensagemNaTela(mensagem) {
     const containerMensagens = document.querySelector(".containerMensagens");
-    containerMensagens.innerHTML += `<div class='mensagem'>
-        (${mensagem.time}) ${mensagem.from}: ${mensagem.text}
-    </div>`;
+    switch(mensagem.type) {
+        case "status":
+            containerMensagens.innerHTML += `<div class='balloon status'>(${mensagem.time}) ${mensagem.from}: ${mensagem.text}</div>`;
+        break;
+
+        case "message":
+            containerMensagens.innerHTML += `<div class='balloon message'>(${mensagem.time}) ${mensagem.from}: ${mensagem.text}</div>`;
+        break;
+
+        case "privateMessage":
+            containerMensagens.innerHTML += `<div class='balloon private_message'>(${mensagem.time}) ${mensagem.from}: ${mensagem.text}</div>`;
+        break;
+    }
+}
+
+function limpaTela() {
+    const containerMensagens = document.querySelector(".containerMensagens");
+    containerMensagens.innerHTML = "";
 }
 
 function enviaMensagem() {
@@ -68,7 +86,7 @@ function enviaMensagem() {
 
 function trataSucessoEnvioMsg(dadosEnvio) {
     console.log("Sucesso no envio da mensagem!");
-    buscarMensagensServidor();
+    refreshMessages();
 }
 
 entrarNaSala()

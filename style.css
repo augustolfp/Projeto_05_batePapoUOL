@@ -57,10 +57,20 @@ input::placeholder {
     padding: 106px 0;
 }
 
-.mensagem {
-    background-color: #FFDEDE;
+.balloon {
     font-size: 14px;
     padding: 14px;
     margin: 4px 0;
 }
 
+.status {
+    background-color: #DCDCDC;
+}
+
+.message {
+    background-color: white;
+}
+
+.privateMessage {
+    background-color: #FFDEDE;
+}
