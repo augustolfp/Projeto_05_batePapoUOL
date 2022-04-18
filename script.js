@@ -1,4 +1,5 @@
 let userName;
+let listaParticipantes;
 
 function getUserName() {
     let name = prompt("Digite o seu Username!");
@@ -29,6 +30,8 @@ function tratarSucessoLogin() {
     setInterval(refreshConnection, 4000);
     refreshMessages();
     setInterval(refreshMessages, 3000);
+    obterListaParticipantes();
+    setInterval(obterListaParticipantes, 10000);
     console.log("Login efetuado com sucesso!");
     desligaTelaLogin();
 }
@@ -137,4 +140,14 @@ function clicouEmEntrar() {
 function desligaTelaLogin() {
     const telaLogin = document.querySelector(".telaDeEntrada");
     telaLogin.classList.add("escondido");
+}
+
+function obterListaParticipantes() {
+    const requestParticipantes = axios.get('https://mock-api.driven.com.br/api/v6/uol/participants');
+    requestParticipantes.then(tratarSucessoRequestParticipantes);
+}
+
+function tratarSucessoRequestParticipantes(resposta) {
+    listaParticipantes = resposta.data;
+    console.log("Lista de participantes obtida");
 }
