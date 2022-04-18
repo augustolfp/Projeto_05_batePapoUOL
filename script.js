@@ -5,8 +5,9 @@ function getUserName() {
     userName = {name: name};
 }
 
-function entrarNaSala() {
-    getUserName();
+function entrarNaSala(name) {
+    //getUserName();
+    userName = {name: name};
     const addUser = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants', userName);
     addUser.then(tratarSucessoLogin);
     addUser.catch(tratarFalhaLogin);
@@ -17,7 +18,7 @@ function tratarFalhaLogin(dadosErroLogin) {
     switch(errorCode) {
         case 400:
             alert("Já existe um usuário com esse nome! Tente novamente!");
-            return entrarNaSala();
+            //return entrarNaSala();
         default: 
             window.location.reload();
             break;
@@ -29,6 +30,7 @@ function tratarSucessoLogin() {
     refreshMessages();
     setInterval(refreshMessages, 3000);
     console.log("Login efetuado com sucesso!");
+    desligaTelaLogin();
 }
 
 function refreshConnection() {
@@ -127,4 +129,12 @@ document.addEventListener("keyup", function(teclaClicada) {
 })
 
 
-entrarNaSala()
+function clicouEmEntrar() {
+    const usuario = document.querySelector(".telaDeEntrada input").value;
+    entrarNaSala(usuario);
+}
+
+function desligaTelaLogin() {
+    const telaLogin = document.querySelector(".telaDeEntrada");
+    telaLogin.classList.add("escondido");
+}
