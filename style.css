@@ -61,6 +61,7 @@ body {
 }
 
 .balloon {
+    overflow-wrap: break-word;
     font-size: 14px;
     padding: 14px;
     margin: 4px 0;

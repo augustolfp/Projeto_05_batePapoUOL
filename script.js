@@ -1,13 +1,7 @@
 let userName;
 let listaParticipantes;
 
-function getUserName() {
-    let name = prompt("Digite o seu Username!");
-    userName = {name: name};
-}
-
 function entrarNaSala(name) {
-    //getUserName();
     userName = {name: name};
     const addUser = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants', userName);
     addUser.then(tratarSucessoLogin);
@@ -19,7 +13,6 @@ function tratarFalhaLogin(dadosErroLogin) {
     switch(errorCode) {
         case 400:
             alert("Já existe um usuário com esse nome! Tente novamente!");
-            //return entrarNaSala();
         default: 
             window.location.reload();
             break;
@@ -39,8 +32,6 @@ function tratarSucessoLogin() {
 function refreshConnection() {
     const refreshPromess = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', userName);
     refreshPromess.catch(window.location.reload);
-    refreshPromess.then(console.log("Conexão Atualizada"));
-
 }
 
 function refreshMessages() {
@@ -91,22 +82,13 @@ function enviaMensagem() {
         const mensagem = {from: userName.name, to: "Todos", text: texto, type: "message"};
         const envioMensagem = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', mensagem);
         caixaTexto.value = "";
-        envioMensagem.then(trataSucessoEnvioMsg);
-        envioMensagem.catch(trataFalhaEnvioMensagem);
+        envioMensagem.then(refreshMessages);
+        envioMensagem.catch(window.location.reload);
     }
 }
 
-function trataFalhaEnvioMensagem() {
-    window.location.reload();
-}
-
-function trataSucessoEnvioMsg(dadosEnvio) {
-    console.log("Sucesso no envio da mensagem!");
-    refreshMessages();
-}
-
 function mensagemPrivadaEhParaMim(mensagem) {
-    if(mensagem.to===userName.name) {
+    if(mensagem.to===userName.name || mensagem.from===userName.name) {
         return true;
     }
     else {
