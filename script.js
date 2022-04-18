@@ -71,7 +71,7 @@ function insereMensagemNaTela(mensagem) {
             containerMensagens.innerHTML += `<div class='balloon message'><span class='horarioMensagem'>(${mensagem.time}) </span><span class = 'users'>${mensagem.from} </span>para <span class = 'users'>${mensagem.to}</span>: ${mensagem.text}</div>`;
         break;
 
-        case "privateMessage":
+        case "private_message":
             if(mensagemPrivadaEhParaMim(mensagem)) {
                 containerMensagens.innerHTML += `<div class='balloon privateMessage'><span class='horarioMensagem'>(${mensagem.time}) </span><span class = 'users'>${mensagem.from} </span>reservadamente para <span class = 'users'>${mensagem.to}</span>: ${mensagem.text}</div>`;
             }
@@ -85,7 +85,7 @@ function limpaTela() {
 }
 
 function enviaMensagem() {
-    const caixaTexto = document.querySelector("input");
+    const caixaTexto = document.querySelector(".barraBase input");
     const texto = caixaTexto.value;
     if (texto !== "") {
         const mensagem = {from: userName.name, to: "Todos", text: texto, type: "message"};
